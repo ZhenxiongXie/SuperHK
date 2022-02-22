@@ -116,7 +116,17 @@ int main(int argc, char** argv)
 		auto x2al = is.second->Unfold(chi2.matrix());
 		
 		//output
-			fout << sigma(syst_i) << "\t" << x2al[type].sum() <<"\n";
+		if (type == "E_FHC"){
+			//std::cout << "E_FHC here!" << std::endl;
+			fout << sigma(syst_i) << "\t" << x2al[type].head(24).sum() <<"\n";
+		}
+			else if (type == "E_RHC"){
+				fout << sigma(syst_i) << "\t" << x2al[type].head(24).sum() <<"\n";
+			}
+			else{
+				fout << sigma(syst_i) << "\t" << x2al[type].sum() <<"\n";
+			}
+		
 		}
 
 		}

@@ -70,6 +70,20 @@ int main(int argc, char** argv)
 		osc->SetMasses<Oscillator::inverted>(M12, M23);
 	osc->SetPMNS<Oscillator::sin2>(S12, S13, S23, dCP);
 
+//osc prob
+        //define output files
+        std::string outputprob = "oscprob.dat";
+        //start filling in output
+        std::ofstream fout(outputprob.c_str());
+        for (double energy = 0; energy <= 10; energy += 0.002) {
+                fout << energy << "\t"
+                     << osc->Probability(Nu::E_, Nu::E_, energy) << "\t"
+                     << osc->Probability(Nu::M_, Nu::E_, energy) << "\t"
+                     << osc->Probability(Nu::E_, Nu::M_, energy) << "\t"
+                     << osc->Probability(Nu::M_, Nu::M_, energy) << "\n";
+        }
+
+
 	int error = std::strtol(argv[2], NULL, 10);
 	double sigma = std::strtod(argv[3], NULL);
 	for (const auto &is : samples) {
@@ -79,6 +93,7 @@ int main(int argc, char** argv)
 		// create array for errors
 		Eigen::VectorXd epsil = Eigen::VectorXd::Zero(is.second->NumSys());
 
+	
 		if (error < 0) {	// want the scale error
 			auto scale = is.second->ScaleError();
 			for (const auto & se : scale)

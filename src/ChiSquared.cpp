@@ -560,6 +560,33 @@ double ChiSquared::SysX2(const Eigen::VectorXd &epsil) {
 	return epsil.transpose() * _corr * epsil;
 }
 
+//fake data
+Eigen::VectorXd ChiSquared::Gamma(const Eigen::VectorXd &En,
+                                 const Eigen::VectorXd &epsil)
+{
+        assert((En.size() == _nBin) && (epsil.size() == _nSys));
+        Eigen::ArrayXd gam(_nBin);
+
+        int sys_off = 0, bin_off = 0;
+        for (const auto &is : _sample) {
+                gam.segment(bin_off, is->_nBin) = is->Gamma(En.segment(bin_off, is->_nBin),
+                epsil.segment(sys_off, is->_nSys));
+                sys_off += is->_nSys;
+                bin_off += is->_nBin;
+        }
+        return gam.matrix();
+}
+
+Eigen::VectorXd ChiSquared::GammaP(const Eigen::VectorXd &En, const Eigen::VectorXd &epsil){
+        Eigen::VectorXd gam;
+        for (const auto &is : _sample) {
+        auto scales = is->ScaleMatrix(&Sample::Nor, epsil);
+        gam = scales * Gamma(En, epsil);
+        }
+        return gam;
+
+}
+
 /*
 void ChiSquared::JacobianHessian(Eigen::VectorXd &jac, Eigen::MatrixXd &hes,
 				 const Eigen::VectorXd &On,

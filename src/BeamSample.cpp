@@ -109,7 +109,6 @@ void BeamSample::LoadReconstruction(const CardDealer &cd)
 	for (const std::string &reco : reco_files){
 		LoadReconstruction(reco);
 	}
-
 //	for (const std::string &ih : _horn)	//FHC, RHC
 //		for (const std::string &im : _mode)	//nuE->nuE, nuM->nuE, nuM->nuM
 //			LoadReconstruction(im + "_" + ih);
@@ -119,6 +118,57 @@ void BeamSample::LoadReconstruction(const CardDealer &cd)
 	//system(cmd.c_str());
 }
 
+//for fake data
+/*
+void BeamSample::LoadFakeReconstruction(const CardDearler &cd)
+{
+//        if (!cd.Get("FakeData", FakeData))
+//                Fakedata = false;
+//        std::cout << "BeamSample: Fake data flag before loading reco is " << FakeData << ";" << std::endl;
+//        if (FakeData) {
+                if (!cd.Get("FD_reco_input", FD_reco_input))
+                        throw std::invalid_argument("BeamSample: no reconstruction files for fake data in card but it should have,"
+                                            "very bad!");
+                for (const std::string &FD_reco : FD_reco_files){
+                LoadFakeReconstruction(FD_reco);
+	        }
+//	}
+//        else {
+//        for (const std::string &reco : reco_files){
+//                LoadReconstruction(reco);
+//        	}
+//	std::cout << "BeamSample: Fake data flag after loading reco is " << FakeData << ";" << std::endl;
+	
+}
+
+void BeamSample::LoadFakeReconstruction(std::string FD_reco_file){
+        if (FD_reco_file.find("nu") == std::string::npos) {
+                std::cout << "BeamSample: file " << FD_reco_file << " does not have "
+                        << "channel type (nu.._nu.._.HC format) in its name" << std::endl;
+                return;
+        }
+
+        std::string channel = FD_reco_file.substr(FD_reco_file.find("nu"));
+        if (channel.find(".card") != std::string::npos)
+                channel.erase(channel.find(".card"));
+
+        if (kVerbosity > 2)
+                std::cout << "BeamSample: to do fake data study, using reconstruction file " << FD_reco_file
+                          << " for channel " << channel << std::endl;
+
+        CardDealer cd(FD_reco_file);
+
+        std::string FD_reco_path;
+        if (!cd.Get("FD_reco_path", FD_reco_path)) {
+                if (kVerbosity > 0)
+                        std::cerr << "WARNING - BeamSample: no reco_path for the fake data study specified in \"
+                                  << FD_reco_file << "\"" << std::endl;
+                return;
+        }
+
+
+}
+*/
 void BeamSample::LoadReconstruction(std::string reco_file)
 {
 //	std::string reco_file, type = "reco_" + channel;
@@ -170,6 +220,8 @@ void BeamSample::LoadReconstruction(std::string reco_file)
 	std::unordered_map<std::string, std::string> mSD;
 	//look if there is a particular event
 	if (cd.Get("ring_", mSD))
+		//check
+		//std::cout << "mSD: " << mSD.c_str() << std::endl;
 		for (const auto &is : mSD) {
 			std::string type = is.first.substr(0, is.first.find_first_of('_'))
 					 + channel.substr(channel.find_last_of('_'));
@@ -210,7 +262,10 @@ void BeamSample::LoadReconstruction(std::string reco_file)
 			rm *= weight;
 			// style is E_CCQE_nuM0_nuM0_RHC 
 			_reco[is.first + "_" + channel] = rm;
-
+			//for check
+			std::cout << "_reco first name: " << is.first << "_" <<  channel << std::endl;
+			//std::cout << "_reco matrix: " << rm << std::endl;
+			
 			const double *bx = h2->GetXaxis()->GetXbins()->GetArray();
 			const double *by = h2->GetYaxis()->GetXbins()->GetArray();
 
@@ -221,7 +276,6 @@ void BeamSample::LoadReconstruction(std::string reco_file)
 			//_binX[is.first].assign(bx, bx + xs + 1);
 			//_binY[is.first].assign(by, by + ys + 1);
 		}
-
 	inFile->Close();
 }
 
@@ -246,11 +300,16 @@ std::unordered_map<std::string, Eigen::VectorXd>
 
 		std::string hname = ir.first;
 		size_t len = hname.find_last_of('_') - hname.find_first_of('_');
+		//print someting to check 
+		std::cout << "hname: " << hname << std::endl;
 
 		// this hould be 'nuE0_nuE0' like
 		//std::string cname = hname.substr(hname.find("nu"), 9);
 		auto nuIn  = Nu::fromString(hname.substr(hname.find("_nu")+1, 4));
 		auto nuOut = Nu::fromString(hname.substr(hname.rfind("_nu")+1, 4));
+		//print something to check
+		std::cout << "Probility_nuIn: " << nuIn << ";" << std::endl;
+		std::cout << "Probility_nuOut: " << nuOut << ";" << std::endl;
 		// this hould be 'E_FHC' like
 		hname.erase(hname.find_first_of('_'), len);
 

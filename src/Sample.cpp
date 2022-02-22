@@ -51,6 +51,10 @@ void Sample::Load(const CardDealer &cd, std::string process) {
 		DefineBinning(process.find('E') != std::string::npos);
 	if (process.find('S') != std::string::npos)
 		LoadSystematics(cd);
+/*
+	if (process.find('F') != std::string::npos)
+		LoadFakeReconstruction(cd);
+*/
 }
 
 int Sample::NumBin() {

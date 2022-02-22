@@ -77,7 +77,12 @@ int main(int argc, char** argv)
 		trueOrder = "normal";
 	if (!cd.Get("fit_hierarchy", fitOrder))
 		fitOrder = "normal";
-
+	
+	//for the fake data study - set a flag here
+/*	bool FakeData;
+	if (!cd.Get("FakeData", FakeData))
+		FakeData = false;
+*/
 
 	//open output file
 	std::string outName;
@@ -114,6 +119,7 @@ int main(int argc, char** argv)
 	//Eigen::VectorXd trueSpectra = fitter->ConstructSamples(osc);
 	Eigen::VectorXd trueSpectra;	// don't compute just now
 	bool trueLoad = true;
+//	FakeData = false;
 
 	if (outName.find(".root") == std::string::npos)
 		outName += ".root";
@@ -218,10 +224,56 @@ int main(int argc, char** argv)
 		fitter->SetPoint(Point);
 		Eigen::VectorXd fitSpectra = fitter->ConstructSamples(osc);
 
+		//for the new input
+		//trueSpectra = fitter -> NonZeroSpectra(trueSpectra);
+		//fitSpectra = fitter -> NonZeroSpectra(fitSpectra);
+
+		//for check
+//                        std::cout << "Non-zero True Spectrum for check: " << NewtrueSpectra.transpose() << std::endl;
+//                        std::cout << "Non-zero Fit Spectrum for check: " << NewfitSpectra.transpose() << std::endl;
+
+//                        std::cout << "True Spectrum for check: " << trueSpectra.transpose() << std::endl;
+//			std::cout << "Fit Spectrum for check: " << fitSpectra.transpose() << std::endl;
+
+		//for the fake data study
+		
+		if (kVerbosity)
+                        std::cout << "True Spectrum before energy shift: " << trueSpectra << std::endl;
+
+		Eigen::VectorXd epsil = Eigen::VectorXd::Zero(NumSys);
+                epsil(NumSys-1) = 1;
+		if (kVerbosity)
+                        std::cout << "epsil: " << epsil << std::endl;	
+		trueSpectra = fitter->GammaP(trueSpectra, epsil);
+
+		if (kVerbosity)
+                        std::cout << "True Spectrum after energy shift: " << trueSpectra << std::endl;
+
 		Eigen::VectorXd eps = fitter->FitX2(trueSpectra, fitSpectra);
+//		eps = fitter->FitX2(trueSpectra, fitSpectra);
 		ObsX2 = fitter->ObsX2(trueSpectra, fitSpectra, eps);
 		SysX2 = fitter->SysX2(eps);
 		X2 = ObsX2 + SysX2 + PenX2;
+
+
+//new input
+/*
+		std::cout << "stops at eps" << std::endl;
+		Eigen::VectorXd eps = fitter->FitX2(NewtrueSpectra, NewfitSpectra);
+                //eps = fitter->FitX2(NewtrueSpectra, NewfitSpectra);
+                std::cout << "stops at Obs" << std::endl;
+                ObsX2 = fitter->ObsX2(NewtrueSpectra, NewfitSpectra, eps);
+		std::cout << "stops at Sys" << std::endl;
+                SysX2 = fitter->SysX2(eps);
+                X2 = ObsX2 + SysX2 + PenX2;
+		fitter-> ResetBins(trueSpectra);
+*/
+		/*//for check
+		Eigen::VectorXd ObsX2n = fitter -> ObsX2n(trueSpectra, fitSpectra, eps);
+		if (kVerbosity)
+                        std::cout << "fake data study - eps: " << trueSpectra << std::endl;
+		*/	
+		
 
 		if (scan != "CPV") {
 			Eigen::VectorXd var = fitter->Variance(trueSpectra, fitSpectra, eps);
@@ -236,6 +288,7 @@ int main(int argc, char** argv)
 		}
 		std::string cov_name = "covariance_point_"+std::to_string(Point);
 		Covariance.Write(cov_name.c_str());
+
 		if (kVerbosity)
 			std::cout << "Fitter: X2 computed " << X2 << " ("
 				  << ObsX2 << " + " << SysX2 << " + "

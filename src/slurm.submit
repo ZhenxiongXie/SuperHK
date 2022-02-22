@@ -17,7 +17,7 @@ cat << EOF
 #SBATCH --job-name=$name
 #SBATCH -o $output/L$name.%a.log
 #SBATCH -p nms_research,shared
-#SBATCH --time=3-0
+#SBATCH --time=48:00:00
 #SBATCH --cpus-per-task=1
 
 srun $binary $name \$SLURM_ARRAY_TASK_ID $njobs $card
