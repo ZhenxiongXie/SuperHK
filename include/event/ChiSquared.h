@@ -92,6 +92,9 @@ class ChiSquared
 			     const Eigen::VectorXd &En,
 			     const Eigen::VectorXd &epsil);
 
+                Eigen::VectorXd Gamma(const Eigen::VectorXd &En, const Eigen::VectorXd &epsil);
+                Eigen::VectorXd GammaP(const Eigen::VectorXd &En, const Eigen::VectorXd &epsil);
+//              Eigen::VectorXd NonZeroSpectra(const Eigen::VectorXd &Spectra);
 		//Eigen::ArrayXd ObsX2n(const Eigen::VectorXd &On,
 				      //const Eigen::VectorXd &En,
 			     //const Eigen::VectorXd &epsil);

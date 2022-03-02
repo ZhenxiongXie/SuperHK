@@ -92,6 +92,12 @@ class Sample
 			const Eigen::ArrayXd &en = En.array();
 
 			Eigen::ArrayXd chi2 = 2 * en - 2 * on * (1 + en.log() - on.log());
+			for (int ibin = 0; ibin < chi2.size(); ++ibin)
+                                {
+                                if (ibin == 23 || ibin == 24 || ibin == 48 || ibin == 49)
+                                        chi2(ibin) = 0;
+                                }
+
 			//return chi2;
 			return (chi2.isFinite()).select(chi2, 0);
 		}
@@ -137,7 +143,7 @@ class Sample
 		int _nBin; //, _allBin;
 		std::unordered_map<std::string, size_t> _offset;
 		std::unordered_map<std::string, std::vector<size_t> > _binpos;
-		std::unordered_map<std::string, std::vector<double> > _global_true, _global_reco;
+		std::unordered_map<std::string, std::vector<double> > _global_true, _global_reco, _global_FD_reco;
 		// store point for pre computed bins
 		size_t _point;
 		double _stats;

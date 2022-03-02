@@ -31,6 +31,7 @@ class BeamSample : public Sample
 
 		void LoadReconstruction(const CardDealer &cd) override;
 		void LoadSystematics(const CardDealer &cd) override;
+		//void LoadFakeReconstruction(const CardDealer &cd) override;//for the fake data study - load the fake data reco
 
 		std::unordered_map<std::string, Eigen::VectorXd>
 			BuildSamples(std::shared_ptr<Oscillator> osc = nullptr) override;
@@ -41,6 +42,7 @@ class BeamSample : public Sample
 
 	private:
 		std::unordered_map<std::string, Eigen::MatrixXd> _reco;
+		//std::unordered_map<std::string, Eigen::MatrixXd> _FD_reco;//fakedata
 		//std::map<std::string, std::vector<double> > _binX;
 		//std::map<std::string, std::vector<double> > _binY;
 
