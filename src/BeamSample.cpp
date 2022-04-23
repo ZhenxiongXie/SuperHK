@@ -308,8 +308,8 @@ std::unordered_map<std::string, Eigen::VectorXd>
 		auto nuIn  = Nu::fromString(hname.substr(hname.find("_nu")+1, 4));
 		auto nuOut = Nu::fromString(hname.substr(hname.rfind("_nu")+1, 4));
 		//print something to check
-		std::cout << "Probility_nuIn: " << nuIn << ";" << std::endl;
-		std::cout << "Probility_nuOut: " << nuOut << ";" << std::endl;
+		//std::cout << "Probility_nuIn: " << nuIn << ";" << std::endl;
+		//std::cout << "Probility_nuOut: " << nuOut << ";" << std::endl;
 		// this hould be 'E_FHC' like
 		hname.erase(hname.find_first_of('_'), len);
 

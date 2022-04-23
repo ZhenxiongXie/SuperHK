@@ -167,33 +167,48 @@ int main(int argc, char** argv)
 	for (int n = 0; n < sX2->GetEntries(); ++n)
 	{
 		sX2->GetEntry(n);
-		//std::cout << "\nPoint " << point
-		//	  << ", m23 " << *varmap["M23"]
-		//	  << ", s13 " << *varmap["S13"]
-		//	  << ", s22 " << *varmap["S23"]
-		//	  << ", dcp " << *varmap["CP"] << std::endl;
+		std::cout << "\nPoint " << point
+			  << ", m23 " << *varmap["M23"]
+			  //<< ", s13 " << *varmap["S13"]
+			  //<< ", s22 " << *varmap["S23"]
+			  << ", dcp " << *varmap["CP"] 
+			  << "X2: "<< X2 << std::endl;
 
 		for (const auto &ih : histograms)
 		{
-			//std::cout << "histogram " << ih.first << std::endl;
+		//	std::cout << "histogram " << ih.first << std::endl;
 			int ibin = 0;	//find global bin
 			if (variables[ih.first].size() == 1)
 				ibin = ih.second->FindBin(*variables[ih.first][0]);
 			else if (variables[ih.first].size() == 2)
 				ibin = ih.second->FindBin(*variables[ih.first][0],
 							   *variables[ih.first][1]);
+//			if (ih.first == "X2minCP" && ibin == 16)		
+//			std::cout << "16th bin: " << X2 << std::endl;
+
+			if (ih.first == "X2minCP" && *varmap["M23"] == 0.002509)
+                        std::cout << "IMPORTANT: bin" << ibin << "; X2: " << X2  << std::endl;
 
 			if (ih.second->GetBinContent(ibin) == 0 ||
 			    ih.second->GetBinContent(ibin) > X2)
 			{
+				if (ih.first == "X2minCP" && ibin == 16)
+				std::cout << "bin" << ibin << "; X2: " << X2 << "; other param (dm, sin)" << *varmap["M23"] << std::endl;
+				//"; " << *varmap["S13"] << "; " << *varmap["S13"] << std::endl;
 				ih.second->SetBinContent(ibin, X2);
 				histpoints[ih.first]->SetBinContent(ibin, point);
 				if (variables[ih.first].size() < 2)
 					continue;
 
 			}
+			
 		}
+		if (*varmap["M23"] == 0.002509 && *varmap["S13"] == 0.0218 && *varmap["S23"] == 0.528 )
+		std::cout << n << "-th entry: " << X2 << std::endl;
 	}
+		for (int icheck = 1; icheck < 61; icheck++){
+		std::cout << icheck <<"-th bin: " << histograms["X2minCP"]->GetBinContent(icheck) <<std::endl;
+		}
 
 	TFile *outf = new TFile(argv[2], "RECREATE");
 	outf->cd();
@@ -213,6 +228,7 @@ int main(int argc, char** argv)
 					if (hh->GetBinContent(bx+1, n+1) < min) {
 						min = hh->GetBinContent(bx+1, n+1);
 						var = hh->GetYaxis()->GetBinCenter(n+1);
+						//std::cout << "min1: " << min << std::endl;
 					}
 				}
 				histprofxy[ih.first]->SetBinContent(bx+1, var);
@@ -229,6 +245,7 @@ int main(int argc, char** argv)
 					if (hh->GetBinContent(n+1, by+1) < min) {
 						min = hh->GetBinContent(n+1, by+1);
 						var = hh->GetXaxis()->GetBinCenter(n+1);
+						//std::cout << "min2: " << min << std::endl;
 					}
 				}
 				histprofyx[ih.first]->SetBinContent(by+1, var);

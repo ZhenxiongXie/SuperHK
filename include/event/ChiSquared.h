@@ -94,6 +94,7 @@ class ChiSquared
 
                 Eigen::VectorXd Gamma(const Eigen::VectorXd &En, const Eigen::VectorXd &epsil);
                 Eigen::VectorXd GammaP(const Eigen::VectorXd &En, const Eigen::VectorXd &epsil);
+		//std::unordered_map<std::string, Eigen::VectorXd> ChiSquared::Unfold(const Eigen::VectorXd &En)
 //              Eigen::VectorXd NonZeroSpectra(const Eigen::VectorXd &Spectra);
 		//Eigen::ArrayXd ObsX2n(const Eigen::VectorXd &On,
 				      //const Eigen::VectorXd &En,

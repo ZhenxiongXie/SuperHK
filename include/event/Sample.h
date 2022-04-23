@@ -94,7 +94,7 @@ class Sample
 			Eigen::ArrayXd chi2 = 2 * en - 2 * on * (1 + en.log() - on.log());
 			for (int ibin = 0; ibin < chi2.size(); ++ibin)
                                 {
-                                if (ibin == 23 || ibin == 24 || ibin == 48 || ibin == 49)
+                                if (ibin == 25 || ibin == 26 || ibin == 52 || ibin == 53)
                                         chi2(ibin) = 0;
                                 }
 

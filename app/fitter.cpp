@@ -237,24 +237,25 @@ int main(int argc, char** argv)
 
 		//for the fake data study
 		
-		if (kVerbosity)
-                        std::cout << "True Spectrum before energy shift: " << trueSpectra << std::endl;
+		//if (kVerbosity)
+                std::cout << "True Spectrum before energy shift: " << trueSpectra.transpose<< std::endl;
 
 		Eigen::VectorXd epsil = Eigen::VectorXd::Zero(NumSys);
                 epsil(NumSys-1) = 1;
-		if (kVerbosity)
-                        std::cout << "epsil: " << epsil << std::endl;	
+		//if (kVerbosity)
+                //        std::cout << "epsil: " << epsil << std::endl;	
 		trueSpectra = fitter->GammaP(trueSpectra, epsil);
 
-		if (kVerbosity)
-                        std::cout << "True Spectrum after energy shift: " << trueSpectra << std::endl;
+		//if (kVerbosity)
+                //        std::cout << "True Spectrum after energy shift: " << trueSpectra << std::endl;
 
 		Eigen::VectorXd eps = fitter->FitX2(trueSpectra, fitSpectra);
 //		eps = fitter->FitX2(trueSpectra, fitSpectra);
 		ObsX2 = fitter->ObsX2(trueSpectra, fitSpectra, eps);
 		SysX2 = fitter->SysX2(eps);
 		X2 = ObsX2 + SysX2 + PenX2;
-
+		std::cout << "true spectra is " << trueSpectra.transpose() << std::endl;
+		std::cout << "obs spectra is " << fitSpectra.transpose() << std::endl;
 
 //new input
 /*

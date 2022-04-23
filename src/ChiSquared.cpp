@@ -256,7 +256,8 @@ Eigen::VectorXd ChiSquared::FitX2(const Eigen::VectorXd &On, const Eigen::Vector
 				step = std::min(step, std::abs(best_x2 - x2));
 				best_eps = epsil;
 				best_x2 = x2;
-				std::cout << "-> new best! X2 = " << best_x2;
+				std::cout << "-> new best! X2 = " << best_x2 << std::endl;
+				std::cout << "new best epsil is " << epsil.transpose() << std::endl;
 			}
 			else
 				step /= 10.;	// reset step size
@@ -271,7 +272,8 @@ Eigen::VectorXd ChiSquared::FitX2(const Eigen::VectorXd &On, const Eigen::Vector
 				//prev_eps = best_eps;
 				best_eps = epsil;
 				best_x2 = x2;
-				std::cout << "-> new best! X2 = " << best_x2;
+				std::cout << "-> new best! X2 = " << best_x2 << std::endl;
+				std::cout << "new best epsil is " << epsil.transpose() << std::endl;		
 			}
 			step /= 10.;	// reset step size
 			//step *= lm_up;
@@ -586,6 +588,20 @@ Eigen::VectorXd ChiSquared::GammaP(const Eigen::VectorXd &En, const Eigen::Vecto
         return gam;
 
 }
+/*
+std::unordered_map<std::string, Eigen::VectorXd> ChiSquared::Unfold(const Eigen::VectorXd &En)
+{
+        assert(En.size() == _nBin);
+        std::unordered_map<std::string, Eigen::VectorXd> samples;
+        for (const std::string it : _type) {
+                samples[it] = Eigen::VectorXd::Zero(_global_true[it].size() - 1);
+                for (size_t m = 0, n = _offset[it]; m < _binpos[it].size(); ++m, ++n)
+                        samples[it](_binpos[it][m]) = En(n);
+        }
+
+        return samples;
+}
+*/
 
 /*
 void ChiSquared::JacobianHessian(Eigen::VectorXd &jac, Eigen::MatrixXd &hes,
