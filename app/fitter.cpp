@@ -199,6 +199,17 @@ int main(int argc, char** argv)
 			     std::abs(std::sin(dCP)) > 1e-5)
 			continue;
 
+		//check the osc
+                        std::cout << "\nFitter: the true point " <<  tPoint << "\n";
+                        std::cout << "m23 " << tM23 << ", s13 " << tS13
+                                  << ", s23 " << tS23 << ", dcp " << tdCP << std::endl;
+	        if (trueOrder == "normal")
+        	        osc->SetMasses<Oscillator::normal>(tM12, tM23);
+        	else if (trueOrder == "inverted")
+                	osc->SetMasses<Oscillator::inverted>(tM12, tM23);
+        	osc->SetPMNS<Oscillator::sin2>(tS12, tS13, tS23, tdCP);
+        	fitter->SetPoint(tPoint);
+			trueSpectra = fitter->ConstructSamples(osc);
 		// load trueSpectra now, osc has not changed yet
 		if (trueLoad) {
 			trueSpectra = fitter->ConstructSamples(osc);
@@ -238,7 +249,7 @@ int main(int argc, char** argv)
 		//for the fake data study
 		
 		//if (kVerbosity)
-                std::cout << "True Spectrum before energy shift: " << trueSpectra.transpose<< std::endl;
+                std::cout << "True Spectrum before energy shift: " << trueSpectra.transpose()<< std::endl;
 
 		Eigen::VectorXd epsil = Eigen::VectorXd::Zero(NumSys);
                 epsil(NumSys-1) = 1;
@@ -255,7 +266,7 @@ int main(int argc, char** argv)
 		SysX2 = fitter->SysX2(eps);
 		X2 = ObsX2 + SysX2 + PenX2;
 		std::cout << "true spectra is " << trueSpectra.transpose() << std::endl;
-		std::cout << "obs spectra is " << fitSpectra.transpose() << std::endl;
+		std::cout << "fit spectra is " << fitSpectra.transpose() << std::endl;
 
 //new input
 /*
